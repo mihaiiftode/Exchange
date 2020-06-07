@@ -2,25 +2,64 @@ using System;
 
 namespace Exchange
 {
-    public class CommandLineParser<T> where T : new()
+    public class CommandLineParser
     {
         public string Error { get; private set; }
-        public T ParsedObject { get; private set; }
+        public FxExchange ParsedObject { get; private set; }
 
-        public CommandLineParser<T> Parse(string[] args)
+        public CommandLineParser Parse(string[] args)
         {
+            if (args.Length == 0)
+            {
+                Error = Constants.NoArgs;
+            }
+            else if (args.Length != 2)
+            {
+                Error = Constants.InvalidNumberOfArgs;
+            }
+            else
+            {
+                var currencyPair = args[0].Split("/");
+                if (currencyPair.Length != 2)
+                {
+                    Error = Constants.CurrencyPairIncorrectFormat;
+                    return this;
+                }
+
+                if (!int.TryParse(args[1], out var result))
+                {
+                    Error = Constants.UnableToParseAmount;
+                    return this;
+                }
+
+                ParsedObject = new FxExchange
+                {
+                    From = currencyPair[0],
+                    To = currencyPair[1],
+                    Amount = result
+                };
+            }
+
             return this;
         }
 
-        public CommandLineParser<T> WithError(Action<string> action)
+        public CommandLineParser WithError(Action<string> action)
         {
-            action(Error);
+            if (!string.IsNullOrWhiteSpace(Error))
+            {
+                action(Error);
+            }
+
             return this;
         }
 
-        public CommandLineParser<T> WithSuccess(Action<T> action)
+        public CommandLineParser WithSuccess(Action<FxExchange> action)
         {
-            action(ParsedObject);
+            if (!(ParsedObject is null))
+            {
+                action(ParsedObject);
+            }
+
             return this;
         }
     }

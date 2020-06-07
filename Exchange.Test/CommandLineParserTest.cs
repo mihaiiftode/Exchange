@@ -9,7 +9,7 @@ namespace Exchange.Test
         public void Parse_ParsesFxExchange_Command()
         {
             // arrange
-            var sut = new CommandLineParser<FxExchange>();
+            var sut = new CommandLineParser();
 
             // act
             sut.Parse(new[] {"DKK/USD", "20"});
@@ -25,24 +25,33 @@ namespace Exchange.Test
         public void WithSuccess_Callback_IsExecuted()
         {
             // arrange
-            var sut = new CommandLineParser<FxExchange>();
+            var sut = new CommandLineParser();
 
             // act
             // assert
             sut.Parse(new[] {"DKK/USD", "20"})
-                .WithSuccess(exchange => { exchange.ShouldNotBeNull(); });
+                .WithSuccess(exchange =>
+                {
+                    exchange.From.ShouldBe("DKK");
+                    exchange.To.ShouldBe("USD");
+                    exchange.Amount.ShouldBe(20);
+                });
         }
 
-        [Fact]
-        public void WithError_Callback_IsExecuted()
+        [Theory]
+        [InlineData(new string[0], Constants.NoArgs)]
+        [InlineData(new[] {"test"}, Constants.InvalidNumberOfArgs)]
+        [InlineData(new[] {"DKK/USD", "test"}, Constants.UnableToParseAmount)]
+        [InlineData(new[] {"DKKUSD", "20"}, Constants.CurrencyPairIncorrectFormat)]
+        public void WithError_Callback_IsExecuted(string[] data, string expectedMessage)
         {
             // arrange
-            var sut = new CommandLineParser<FxExchange>();
+            var sut = new CommandLineParser();
 
             // act
             // assert
-            sut.Parse(new[] {"DKK/USD", "20"})
-                .WithError(s => s.ShouldBe("Unable to parse input data!"));
+            sut.Parse(data)
+                .WithError(s => s.ShouldBe(expectedMessage));
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Exchange
         {
             Console.WriteLine("Hello World!");
 
-            var command = new CommandLineParser<FxExchange>();
+            var command = new CommandLineParser();
 
             command.Parse(args)
                 .WithError(Console.WriteLine)
