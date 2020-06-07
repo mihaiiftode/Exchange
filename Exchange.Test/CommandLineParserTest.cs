@@ -1,3 +1,4 @@
+using Exchange.Implementation;
 using Shouldly;
 using Xunit;
 

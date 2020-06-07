@@ -1,4 +1,6 @@
 ﻿using System;
+using Exchange.Implementation;
+using Exchange.Model;
 
 namespace Exchange
 {
@@ -6,13 +8,16 @@ namespace Exchange
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
-
             var command = new CommandLineParser();
 
             command.Parse(args)
                 .WithError(Console.WriteLine)
-                .WithSuccess(ob => { });
+                .WithSuccess(ExecuteExchange);
+        }
+
+        private static void ExecuteExchange(FxExchange fxExchange)
+        {
+            
         }
     }
 }

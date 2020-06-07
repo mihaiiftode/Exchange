@@ -1,8 +1,10 @@
 using System;
+using Exchange.Contracts;
+using Exchange.Model;
 
-namespace Exchange
+namespace Exchange.Implementation
 {
-    public class CommandLineParser
+    public class CommandLineParser : ICommandLineParser
     {
         public string Error { get; private set; }
         public FxExchange ParsedObject { get; private set; }

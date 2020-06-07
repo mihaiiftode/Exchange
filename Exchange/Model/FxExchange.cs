@@ -1,4 +1,4 @@
-namespace Exchange
+namespace Exchange.Model
 {
     public class FxExchange
     {
