@@ -17,7 +17,16 @@ namespace Exchange
 
         private static void ExecuteExchange(FxExchange fxExchange)
         {
-            
+            var exchanger = new CurrencyExchanger(new ExchangeRateHolder(100));
+
+            try
+            {
+                Console.WriteLine(exchanger.Exchange(fxExchange));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
     }
 }

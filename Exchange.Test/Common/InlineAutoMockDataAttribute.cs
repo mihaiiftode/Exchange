@@ -1,8 +1,7 @@
 using AutoFixture.Xunit2;
-using Exchange.Test.Common;
 using Xunit;
 
-namespace Engage.TestHelpers
+namespace Exchange.Test.Common
 {
     public class InlineAutoMockDataAttribute : CompositeDataAttribute
     {

@@ -1,27 +1,33 @@
-using System.Collections.Generic;
+using System;
+using Exchange.Contracts;
+using Exchange.Exceptions;
 using Exchange.Model;
 
-namespace Exchange
+namespace Exchange.Implementation
 {
     public class CurrencyExchanger : ICurrencyExchanger
     {
-        
+        private readonly IExchangeRateHolder _exchangeRateHolder;
+
+        public CurrencyExchanger(IExchangeRateHolder exchangeRateHolder)
+        {
+            _exchangeRateHolder = exchangeRateHolder ?? throw new ArgumentNullException(nameof(exchangeRateHolder));
+        }
 
         public double Exchange(FxExchange exchange)
         {
-            if (exchange.From == exchange.To) return exchange.Amount;
+            var currencyPair = exchange.CurrencyPair;
+            if (currencyPair.From == currencyPair.To) return exchange.Amount;
 
-            var hasFrom = ExchangeRates.TryGetValue(exchange.From, out var from);
-            var hasTo = ExchangeRates.TryGetValue(exchange.From, out var to);
+            var hasFrom = _exchangeRateHolder.ExchangeRates.TryGetValue(currencyPair.From.ToUpper(), out var from);
+            var hasTo = _exchangeRateHolder.ExchangeRates.TryGetValue(currencyPair.To.ToUpper(), out var to);
 
             if (hasFrom && hasTo)
             {
-                return from / 100 * exchange.Amount / (to / 100);
+                return Math.Round(from * exchange.Amount / to, 4);
             }
-            else
-            {
-                throw new InvalidCurrencyException(string.Format(Constants.CurrencyNotFound, hasFrom ? to : from));
-            }
+
+            throw new InvalidCurrencyException(string.Format(Constants.CurrencyNotFound, hasFrom ? currencyPair.To : currencyPair.From));
         }
     }
 }

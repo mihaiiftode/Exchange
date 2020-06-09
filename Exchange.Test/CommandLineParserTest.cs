@@ -17,8 +17,8 @@ namespace Exchange.Test
 
             // assert
             sut.ParsedObject.ShouldNotBeNull();
-            sut.ParsedObject.From.ShouldBe("DKK");
-            sut.ParsedObject.To.ShouldBe("USD");
+            sut.ParsedObject.CurrencyPair.From.ShouldBe("DKK");
+            sut.ParsedObject.CurrencyPair.To.ShouldBe("USD");
             sut.ParsedObject.Amount.ShouldBe(20);
         }
 
@@ -33,8 +33,8 @@ namespace Exchange.Test
             sut.Parse(new[] {"DKK/USD", "20"})
                 .WithSuccess(exchange =>
                 {
-                    exchange.From.ShouldBe("DKK");
-                    exchange.To.ShouldBe("USD");
+                    exchange.CurrencyPair.From.ShouldBe("DKK");
+                    exchange.CurrencyPair.To.ShouldBe("USD");
                     exchange.Amount.ShouldBe(20);
                 });
         }

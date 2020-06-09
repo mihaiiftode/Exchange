@@ -11,39 +11,37 @@ namespace Exchange.Implementation
 
         public CommandLineParser Parse(string[] args)
         {
-            if (args.Length == 0)
+            if (ArgsAreNotValid(args))
             {
-                Error = Constants.NoArgs;
+                return this;
             }
-            else if (args.Length != 2)
+
+            var currencyPair = args[0].Split("/");
+            if (currencyPair.Length != 2)
             {
-                Error = Constants.InvalidNumberOfArgs;
+                Error = Constants.CurrencyPairIncorrectFormat;
+                return this;
             }
-            else
+
+            if (!int.TryParse(args[1], out var result))
             {
-                var currencyPair = args[0].Split("/");
-                if (currencyPair.Length != 2)
-                {
-                    Error = Constants.CurrencyPairIncorrectFormat;
-                    return this;
-                }
+                Error = Constants.UnableToParseAmount;
+                return this;
+            }
 
-                if (!int.TryParse(args[1], out var result))
-                {
-                    Error = Constants.UnableToParseAmount;
-                    return this;
-                }
-
-                ParsedObject = new FxExchange
+            ParsedObject = new FxExchange
+            {
+                CurrencyPair = new CurrencyPair
                 {
                     From = currencyPair[0],
-                    To = currencyPair[1],
-                    Amount = result
-                };
-            }
+                    To = currencyPair[1]
+                },
+                Amount = result
+            };
 
             return this;
         }
+
 
         public CommandLineParser WithError(Action<string> action)
         {
@@ -63,6 +61,21 @@ namespace Exchange.Implementation
             }
 
             return this;
+        }
+
+        private bool ArgsAreNotValid(string[] args)
+        {
+            switch (args.Length)
+            {
+                case 0:
+                    Error = Constants.NoArgs;
+                    return true;
+                case 2:
+                    return false;
+                default:
+                    Error = Constants.InvalidNumberOfArgs;
+                    return true;
+            }
         }
     }
 }

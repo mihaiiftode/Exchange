@@ -1,10 +1,10 @@
 using System;
 
-namespace Exchange
+namespace Exchange.Exceptions
 {
-    public class InvalidCurrency : Exception
+    public class InvalidCurrencyException : Exception
     {
-        public InvalidCurrency(string message) : base(message)
+        public InvalidCurrencyException(string message) : base(message)
         {
         }
     }
