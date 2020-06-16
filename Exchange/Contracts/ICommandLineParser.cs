@@ -1,5 +1,4 @@
 using System;
-using Exchange.Implementation;
 using Exchange.Model;
 
 namespace Exchange.Contracts
@@ -8,8 +7,8 @@ namespace Exchange.Contracts
     {
         string Error { get; }
         FxExchange ParsedObject { get; }
-        CommandLineParser Parse(string[] args);
-        CommandLineParser WithError(Action<string> action);
-        CommandLineParser WithSuccess(Action<FxExchange> action);
+        ICommandLineParser Parse(string[] args);
+        ICommandLineParser WithError(Action<string> action);
+        ICommandLineParser WithSuccess(Action<FxExchange> action);
     }
 }

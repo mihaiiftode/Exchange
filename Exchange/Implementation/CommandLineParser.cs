@@ -9,7 +9,7 @@ namespace Exchange.Implementation
         public string Error { get; private set; }
         public FxExchange ParsedObject { get; private set; }
 
-        public CommandLineParser Parse(string[] args)
+        public ICommandLineParser Parse(string[] args)
         {
             if (ArgsAreNotValid(args))
             {
@@ -43,7 +43,7 @@ namespace Exchange.Implementation
         }
 
 
-        public CommandLineParser WithError(Action<string> action)
+        public ICommandLineParser WithError(Action<string> action)
         {
             if (!string.IsNullOrWhiteSpace(Error))
             {
@@ -53,7 +53,7 @@ namespace Exchange.Implementation
             return this;
         }
 
-        public CommandLineParser WithSuccess(Action<FxExchange> action)
+        public ICommandLineParser WithSuccess(Action<FxExchange> action)
         {
             if (!(ParsedObject is null))
             {
